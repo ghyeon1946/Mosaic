@@ -45,7 +45,7 @@ class Trainer(object):
          print('No GPU available, using the CPU instead.')
 
    def DataSet(self):
-      self.train_dataset = pd.read_csv(args.data_file_path, names=['src', 'cat'], sep="\t")
+      self.train_dataset = pd.read_csv(self.args.data_file_path, names=['src', 'cat'], sep="\t")
       self.train_dataset = self.train_dataset.reset_index()
       self.train_dataset[:30]
 
@@ -77,7 +77,6 @@ class Trainer(object):
       self.dict2index = {i:word for i, word in enumerate(self.index2dict)}
 
    def Bert_Input(self):
-
       for i in range(len(self.train_x)):
          self.train_x[i].insert(0, '[CLS]')
          self.train_x[i].append('[SEP]')
@@ -93,7 +92,7 @@ class Trainer(object):
          for i in range(len(self.train_y)):
             self.target = []
             for j in range(len(self.train_y[i])):
-               target.append(self.index2dict[self.train_y[i][j]])
+               self.target.append(self.index2dict[self.train_y[i][j]])
             self.targets.append(self.target)
 
          print(len(self.targets))
@@ -140,7 +139,7 @@ class Trainer(object):
       train_masks, validation_masks, _, _ = train_test_split(self.attention_masks, input_ids, random_state=2018, test_size=0.1)
       
       train_inputs.tolist()
-      validation_inputs.tolist() 
+      validation_inputs.tolist()
       
       self.model = TFBertModel.from_pretrained("bert-base-multilingual-cased", from_pt=True, num_labels=len(self.index2dict), 
                                                 output_attentions = False, output_hidden_states = False)
@@ -148,7 +147,7 @@ class Trainer(object):
       token_inputs = tf.keras.layers.Input((self.MAX_LEN,), dtype=tf.int64)
       mask_inputs = tf.keras.layers.Input((self.MAX_LEN,), dtype=tf.int64)
 
-      bert_outputs = model([token_inputs, mask_inputs])
+      bert_outputs = self.model([token_inputs, mask_inputs])
       bert_outputs = bert_outputs[0]
 
       classifier = tf.keras.layers.Dense(len(self.index2dict), activation='softmax')(bert_outputs)
