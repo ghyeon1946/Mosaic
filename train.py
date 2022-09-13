@@ -78,7 +78,7 @@ class Trainer(object):
 
    def Bert_Input(self):
       for i in range(len(self.train_x)):
-         self.train_x[i].insert(0, '[CLS]')
+         self.train_x[i]
          self.train_x[i].append('[SEP]')
          self.train_y[i].insert(0, '-')
          self.train_y[i].append('-')
